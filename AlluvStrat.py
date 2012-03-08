@@ -1,7 +1,7 @@
 import base
 reload(base) # For interactiveness
 
-nt=1000
+nt=5000
 
 a = base.structure()
 a.initialize()

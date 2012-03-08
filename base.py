@@ -113,6 +113,7 @@ class implementation(BMI):
     self.dz = config.getfloat('grid', 'dz')
     self.dy = config.getfloat('grid', 'dx')
     self.B = config.getfloat('grid', 'B')
+    self.dt = config.getfloat('time', 'dt')
     self.b = config.getfloat('channel', 'b')
     self.h = config.getfloat('channel', 'h')
     self.eta = config.getfloat('channel', 'eta')    
@@ -171,6 +172,7 @@ class implementation(BMI):
     self.space[:self.h/self.dz,:] = 0 # Fill a channel-depth with overbank deposit
     # Initial channel position
     self.channel_centerline = np.floor((np.random.randint(self.b2+1,self.B-self.b2))) # channel centerline can't be with b2 (1/2-width) of edge; top indexing exclusive, bottom inclusive (so +1)
+    self.channel_centerline_subgrid = self.channel_centerline # Channel moves on grid based on its resolution, but this tracks its specific position
     self.channel_left = self.channel_centerline - self.b2//self.dy # Inclusive of channel
     self.channel_right = self.channel_centerline + self.b2//self.dy
     self.space[self.eta//self.dz:(self.eta+self.h)//self.dz,self.channel_left:self.channel_right+1] = 1 # Initial channel; "+1" b/c of exclusive indexing
@@ -178,7 +180,6 @@ class implementation(BMI):
     self.channel_loc[self.channel_left:self.channel_right+1] = 1 # +1 to be inclusive
     self.nochannel_loc = 1-self.channel_loc
     # Time steps and friends
-    self.dt = self.dy/self.zetadot # [yr] # Move channel every time it migrates far enough for one dx
     self.t = 0 # Total time counter
     self.grid_update_check_time = self.h / (self.etadot_ch)
     self.npast = 0 # For adjusting the domain
@@ -190,27 +191,32 @@ class implementation(BMI):
   def lateral_migration(self,edge_condition='wall'):
     # Channel lateral migration: random walk at pace set by
     # migration rate
-    self.channel_centerline +=(2*np.random.randint(0,2) - 1) # 1 or -1
-    if edge_condition == 'wall':
-    # Solid wall at edges
-    # Don't let channel move outside of domain
-      if self.channel_centerline > (self.Bcell - self.b2cell):
-        self.channel_centerline = (self.Bcell - self.b2cell)
-      if self.channel_centerline < self.b2cell:
-        self.channel_centerline = self.b2cell # no "+1" needed b/c of 0 indexing
-      self.channel_left = self.channel_centerline - self.b2cell # Inclusive of channel
-      self.channel_right = self.channel_centerline + self.b2cell # Inclusive of channel
-    elif edge_condition == 'wraparound':
-      print "Placeholder to send one edge to the other and create an infite"
-      print "space but with a given width over which things can happen"
-      print "Need to make edits in other parts of the code (calculation_space,"
-      print "at least) to win"
-      print "NOT YET IMPLEMENTED"
-      sys.exit()
-    else:
-      print "Select a valid edge condition: wall or wraparound"
-      sys.exit()
-    self.space[self.eta//self.dz:(self.eta+self.h)//self.dz,self.channel_left:self.channel_right+1] = 1 # Automatically floors everything for indexing, so could just have eta/dz
+    self.channel_centerline_subgrid += (2*np.random.randint(0,2) - 1) * self.zetadot * self.dt # 1 or -1 times distance
+    # Only update channel position if it has moved
+    if self.channel_centerline != np.round(self.channel_centerline_subgrid):
+      # Update channel to new subgrid position
+      self.channel_centerline = np.round(self.channel_centerline_subgrid)
+      # Then handle edges if necessary
+      if edge_condition == 'wall':
+      # Solid wall at edges
+      # Don't let channel move outside of domain
+        if self.channel_centerline > (self.Bcell - self.b2cell):
+          self.channel_centerline = (self.Bcell - self.b2cell)
+        if self.channel_centerline < self.b2cell:
+          self.channel_centerline = self.b2cell # no "+1" needed b/c of 0 indexing
+        self.channel_left = self.channel_centerline - self.b2cell # Inclusive of channel
+        self.channel_right = self.channel_centerline + self.b2cell # Inclusive of channel
+      elif edge_condition == 'wraparound':
+        print "Placeholder to send one edge to the other and create an infite"
+        print "space but with a given width over which things can happen"
+        print "Need to make edits in other parts of the code (calculation_space,"
+        print "at least) to win"
+        print "NOT YET IMPLEMENTED"
+        sys.exit()
+      else:
+        print "Select a valid edge condition: wall or wraparound"
+        sys.exit()
+      self.space[self.eta//self.dz:(self.eta+self.h)//self.dz,self.channel_left:self.channel_right+1] = 1 # Automatically floors everything for indexing, so could just have eta/dz
 
   def aggradation_avulsion(self):
 
@@ -243,6 +249,7 @@ class implementation(BMI):
       # Pick new channel centerline
       # Randomly choose if multiple sites have the minimum elevation; lots of [0] to get array out of tuple
       self.channel_centerline = self.min_elev_cells[0][np.random.randint(0,self.min_elev_cells[0].shape[0])] # min_elev_cells[0] b/c I think it should be a vector
+      self.channel_centerline_subgrid = self.channel_centerline # Update the subgrid centerline based on the avulsed-to centerline
       
       # Once I get a good centerline, construct the rest of the channel
       self.channel_left = self.channel_centerline - self.b2//self.dy # Inclusive of channel

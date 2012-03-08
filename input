@@ -5,12 +5,15 @@ dz = 0.1 ; [m]
 dx = 1 ; [m]
 B = 2001 ; [m]
 
+[time]
+dt = 1
+
 [channel]
 b = 201 ; meters, must be odd and multiple of dx
 h = 5 ; meters
 eta = 0 ; Starting bed elevation; should probably stay at zero
 etadot_ch = 0.01 ; aggradation rate [m/yr]
-zetadot = 0.1 ; lateral migration rate [m/yr]
+zetadot = 1 ; lateral migration rate [m/yr]
 
 [overbank]
 ; Should include options of different overbank aggradation schemes
