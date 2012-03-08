@@ -51,7 +51,7 @@ class implementation(BMI):
     # Long variable names: what the user sees
     # "self" so is visible outside this function
     self.long_var_names = ['vertical cell size',
-                           'horizontal cell size',
+                           'horizontal (cross-stream) cell size',
                            'model domain width',
                            'channel width',
                            'channel depth',
@@ -70,7 +70,7 @@ class implementation(BMI):
     self.ranks = [0,0,0,0,0,0,0,0,2]
     # Short variable names: what the program sees
     # "self" so is visible outside
-    self.short_var_names = ['dz','dx','B','b','h','etadot_ch','zetadot','etadot_ob_xstar','space']
+    self.short_var_names = ['dz','dy','B','b','h','etadot_ch','zetadot','etadot_ob_xstar','space']
 
   def create_static_dictionaries(self):
     self.var_type = dict(zip(self.long_var_names, self.types))
@@ -98,7 +98,7 @@ class implementation(BMI):
   def var_dict(self):
     # Not going to use this actually, per Eric's advice
     self.var_values_shortnames = dict(zip(self.short_var_names, self.var_values_list))
-    v = self.var_values_shortnames # Points at it, so now just have to type, e.g., "v['dx']". Same length as "self.dy"! ('v' for variable)
+    v = self.var_values_shortnames # Points at it, so now just have to type, e.g., "v['dy']". Same length as "self.dy"! ('v' for variable)
   
 
   #######################
@@ -111,9 +111,10 @@ class implementation(BMI):
     # Was thinking about doing something with a dict
     # But for first pass just keep as is and import by hand
     self.dz = config.getfloat('grid', 'dz')
-    self.dy = config.getfloat('grid', 'dx')
+    self.dy = config.getfloat('grid', 'dy')
     self.B = config.getfloat('grid', 'B')
     self.dt = config.getfloat('time', 'dt')
+    self.nt = config.getint('time', 'nt')
     self.b = config.getfloat('channel', 'b')
     self.h = config.getfloat('channel', 'h')
     self.eta = config.getfloat('channel', 'eta')    

@@ -1,12 +1,13 @@
 ; Input file for fluvial stratigraphy code (ADW, 27 DEC)
 
 [grid]
-dz = 0.1 ; [m]
-dx = 1 ; [m]
-B = 2001 ; [m]
+dz = 0.1 ; vertical cell size [m]
+dy = 1 ; lateral cell size [m]
+B = 2001 ; domain width [m]
 
 [time]
-dt = 1
+dt = 1 ; time step size [yr]
+nt = 10000 ; total time steps for model run [--]
 
 [channel]
 b = 201 ; meters, must be odd and multiple of dx

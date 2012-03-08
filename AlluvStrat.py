@@ -1,11 +1,9 @@
 import base
 reload(base) # For interactiveness
 
-nt=5000
-
 a = base.structure()
 a.initialize()
-for t in range(nt):
+for t in range(a.nt):
   a.update()
 
 from matplotlib import pyplot as plt
