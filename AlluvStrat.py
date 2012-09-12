@@ -1,10 +1,10 @@
 import base
 reload(base) # For interactiveness
 
-a = base.structure()
-a.initialize()
+delta = base.structure()
+delta.initialize()
 for t in range(a.nt):
-  a.update()
+  delta.update()
 
 from matplotlib import pyplot as plt
 from numpy import flipud
