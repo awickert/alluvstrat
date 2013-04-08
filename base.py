@@ -238,7 +238,7 @@ class implementation(BMI):
       # At this point, all points at which avulsion_locs == 1 are potential post-avulsion channel locations
       self.future_channel_locs = ((self.avulsion_locs==1).nonzero())[0]
       
-      print self.channel_centerline
+      print "Channel centerline at:", self.channel_centerline
       
       # Find min elevation
       self.min_elev_grid = ((self.space[:,self.future_channel_locs])==2).nonzero()[0].min() # nonzero()[0] for rows: want lowest row
@@ -300,7 +300,7 @@ class implementation(BMI):
       if (self.space[(self.space.shape[0] - (self.h//self.dz) - 1):,:] != 2).any():
         # Then add another channel depth to the top of the array
         self.space = np.vstack((self.space,2*np.ones(((self.h//self.dz,self.space.shape[1])))))
-        print "Raising the roof"
+        #print "Raising the roof"
 
 
 class structure(implementation):
