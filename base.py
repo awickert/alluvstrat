@@ -13,32 +13,7 @@ import scipy.sparse.linalg as lin
 import ConfigParser
 import sys
 
-# SHOULD EVENTUALLY CHANGE THIS TO IMPORTING THE REAL BMI MODULE FILE
-class BMI(object):
-  """
-  Structure of basic model interface
-  """
-  def initialize(self):
-    pass
-    
-  def update(self):
-    pass
-    
-  def finalize(self):
-    pass
-  
-  def get_value(self, long_var_name):
-    pass
-
-  def set_value(self, long_var_name, src):
-    """
-    Setter
-    My "value" is "src" in the CSDMS BMI lingo
-    """
-    pass
-
-
-class implementation(BMI):
+class alluvstrat(object):
   """
   All of the concrete implementation codes go here
   """
@@ -128,20 +103,6 @@ class implementation(BMI):
     """
     print "Variable checker not yet written."
     print "Floor division, potentially with rounding, will occur without warning."
-
-  #########################
-  ## GETTERS AND SETTERS ##
-  #########################
-
-  def get_value(self, long_var_name):
-    print "Getter not yet implemented"
-
-  def set_value(self, long_var_name, src):
-    """
-    Setter
-    My "value" is "src" in the CSDMS BMI lingo
-    """
-    print "Setter not yet implemented"
 
   ######################
   ##  INITIALIZATION  ##
