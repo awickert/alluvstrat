@@ -1,3 +1,6 @@
+AlluvStrat
+-----
+
 Builds alluvial stratigraphy along a strike-section.
 
 * Run the code by running "AlluvStrat.py"
