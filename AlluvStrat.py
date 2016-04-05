@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import base
-#reload(base) # For interactiveness
+reload(base) # For interactiveness
 
 delta = base.structure()
 delta.initialize()

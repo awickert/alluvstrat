@@ -264,7 +264,7 @@ class alluvstrat(object):
         #print "Raising the roof"
 
 
-class structure(implementation):
+class structure(alluvstrat):
   """
   The abstract structure of the program that talks to the concrete 
   implementation goes here.
